@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIPK/LIPN Therapy Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Spectral:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ink: #101a1e;
+    --paper: #f5f7f7;
+    --surface: #ffffff;
+    --line: #d9e0e1;
+    --line-soft: #e8edee;
+    --muted: #566a70;
+    --accent: #0f6f7a;
+    --accent-soft: #e2eff0;
+    --amber: #8a5b12;
+    --amber-soft: #f6eddc;
+    --crimson: #9c3227;
+    --crimson-soft: #f8e6e3;
+    --serif: "Spectral", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+    --col: 68ch;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #dde5e7;
+      --paper: #0c1214;
+      --surface: #131c1f;
+      --line: #27363a;
+      --line-soft: #1d292c;
+      --muted: #90a3a8;
+      --accent: #57c3cd;
+      --accent-soft: #122f33;
+      --amber: #d9a44e;
+      --amber-soft: #2c2415;
+      --crimson: #e58b7f;
+      --crimson-soft: #2e1a17;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #dde5e7;
+    --paper: #0c1214;
+    --surface: #131c1f;
+    --line: #27363a;
+    --line-soft: #1d292c;
+    --muted: #90a3a8;
+    --accent: #57c3cd;
+    --accent-soft: #122f33;
+    --amber: #d9a44e;
+    --amber-soft: #2c2415;
+    --crimson: #e58b7f;
+    --crimson-soft: #2e1a17;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; }
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  /* ---- masthead ---- */
+  header.mast {
+    padding: 56px 0 34px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .kicker {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(30px, 5.2vw, 50px);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+    max-width: 20ch;
+  }
+  .standfirst {
+    font-family: var(--serif);
+    font-size: clamp(17px, 2.3vw, 20px);
+    line-height: 1.5;
+    color: var(--muted);
+    max-width: 58ch;
+    margin: 0;
+  }
+  .byline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 26px;
+    margin-top: 26px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .byline span { white-space: nowrap; }
+
+  /* ---- disclaimer ---- */
+  .disclaimer {
+    margin: 30px 0 0;
+    padding: 20px 22px;
+    background: var(--crimson-soft);
+    border-left: 3px solid var(--crimson);
+    max-width: var(--col);
+  }
+  .disclaimer p { margin: 0; font-size: 15px; }
+  .disclaimer strong { color: var(--crimson); }
+
+  /* ---- sections with gutter ---- */
+  section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px 40px;
+    padding: 46px 0 0;
+    border-top: 1px solid var(--line-soft);
+    margin-top: 46px;
+  }
+  section:first-of-type { border-top: none; }
+  @media (min-width: 900px) {
+    section { grid-template-columns: 132px minmax(0, 1fr); }
+  }
+  .gutter {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 6px;
+  }
+  .gutter b {
+    display: block;
+    color: var(--accent);
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: 0;
+    margin-bottom: 4px;
+  }
+  .body { max-width: var(--col); min-width: 0; }
+  .body > * + * { margin-top: 1.05em; }
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(23px, 3.2vw, 30px);
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.5em;
+    text-wrap: balance;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    margin: 1.9em 0 0.35em;
+  }
+  p { margin: 0; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  code, .gene {
+    font-family: var(--mono);
+    font-size: 0.92em;
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+  ul, ol { margin: 0; padding-left: 1.25em; }
+  li + li { margin-top: 0.5em; }
+  strong { font-weight: 600; }
+
+  /* ---- verification checklist ---- */
+  .checks { display: grid; gap: 14px; margin-top: 20px; }
+  .check {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 14px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .box {
+    width: 17px; height: 17px;
+    border: 1.5px solid var(--accent);
+    margin-top: 4px;
+  }
+  .check h4 {
+    font-family: var(--sans);
+    font-size: 15.5px;
+    font-weight: 600;
+    margin: 0 0 5px;
+  }
+  .check p { font-size: 14.5px; color: var(--muted); }
+
+  /* ---- candidates ---- */
+  .cands { display: grid; gap: 0; margin-top: 22px; }
+  .cand {
+    padding: 26px 0;
+    border-top: 1px solid var(--line);
+  }
+  .cand:last-child { border-bottom: 1px solid var(--line); }
+  .cand-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    margin-bottom: 12px;
+  }
+  .letter {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .cand-head h3 {
+    margin: 0;
+    font-size: 18px;
+    flex: 1 1 260px;
+  }
+  .chip {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .chip-lead { background: var(--accent); color: var(--paper); }
+  .chip-now { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
+  .chip-back { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+  .chip-risk { background: var(--crimson-soft); color: var(--crimson); border: 1px solid var(--crimson); }
+  .cand p { font-size: 15.5px; }
+  .cand p + p { margin-top: 0.85em; }
+  .pro-con { display: grid; gap: 10px; margin-top: 14px; }
+  @media (min-width: 620px) { .pro-con { grid-template-columns: 1fr 1fr; } }
+  .pc {
+    padding: 14px 16px;
+    background: var(--surface);
+    border-top: 2px solid var(--line);
+    font-size: 14.5px;
+  }
+  .pc.up { border-top-color: var(--accent); }
+  .pc.down { border-top-color: var(--amber); }
+  .pc b {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  /* ---- construct map ---- */
+  figure { margin: 26px 0 0; }
+  .map-shell {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 22px 20px 16px;
+  }
+  figcaption {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-top: 10px;
+    max-width: 60ch;
+  }
+  .svg-mono { font-family: var(--mono); }
+
+  /* ---- timeline ---- */
+  .steps { margin-top: 22px; display: grid; gap: 0; }
+  .step {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr);
+    gap: 18px;
+    padding: 20px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+  .step:last-child { border-bottom: 1px solid var(--line-soft); }
+  .step-n {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    padding-top: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .step h4 {
+    font-family: var(--sans);
+    font-size: 15.5px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .step .when {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .step p { font-size: 15px; color: var(--ink); }
+
+  /* ---- tables ---- */
+  .table-shell { overflow-x: auto; margin-top: 20px; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 560px;
+    font-size: 14.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  th, td {
+    text-align: left;
+    padding: 12px 14px 12px 0;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  th {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 1px solid var(--line); }
+  td.verdict { white-space: nowrap; }
+
+  /* ---- care list ---- */
+  .care { display: grid; gap: 12px; margin-top: 20px; }
+  .care-item {
+    padding: 16px 18px;
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+  }
+  .care-item h4 { margin: 0 0 4px; font-family: var(--sans); font-size: 15.5px; font-weight: 600; }
+  .care-item p { font-size: 14.5px; color: var(--muted); }
+
+  /* ---- closing ---- */
+  .close {
+    margin-top: 52px;
+    padding: 34px 0 0;
+    border-top: 2px solid var(--ink);
+    max-width: var(--col);
+  }
+  .close p {
+    font-family: var(--serif);
+    font-size: clamp(17px, 2.3vw, 19.5px);
+    line-height: 1.55;
+  }
+  .close p + p { margin-top: 1em; }
+  footer {
+    margin-top: 40px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: var(--col);
+  }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="kicker">Research proposal &middot; not a treatment</p>
+    <h1>Building a therapy for two deleted skin enzymes</h1>
+    <p class="standfirst">A reported homozygous deletion of <span class="gene">LIPK</span> and <span class="gene">LIPN</span> at 10q23.31 has no precedent, no patient population, and no company working on it. Every component needed to treat it already exists and is already approved in humans for a different gene.</p>
+    <div class="byline">
+      <span>Locus 10q23.31</span>
+      <span>Phenotype ARCI, lamellar type</span>
+      <span>Candidates A&ndash;E</span>
+      <span>Compiled from public literature</span>
+    </div>
+  </header>
+
+  <div class="disclaimer">
+    <p><strong>Read this first.</strong> Nothing here has been tested in a human. This is a design document assembled from published genetics and clinical trial literature, not medical advice and not a treatment plan. The patient&rsquo;s actual genetic report has not been reviewed &mdash; the deletion is taken from a public social media post. Every step requires a treating physician and an institutional research team.</p>
+  </div>
+
+  <section>
+    <div class="gutter"><b>01</b>The defect</div>
+    <div class="body">
+      <h2>What is missing, and why it matters</h2>
+      <p>Two genes sit next to each other in the epidermal lipase cluster on the long arm of chromosome 10. Both encode small secreted enzymes. Both are expressed almost nowhere except skin.</p>
+
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr><th>Gene</th><th>Where it acts</th><th>Known disease</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="gene">LIPN</span></td>
+              <td>Granular-layer keratinocytes, switched on as skin cells mature</td>
+              <td>Autosomal recessive congenital ichthyosis type 8 (OMIM 613943)</td>
+            </tr>
+            <tr>
+              <td><span class="gene">LIPK</span></td>
+              <td>Epidermis only, final step of keratinocyte differentiation</td>
+              <td>None described in humans</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Losing both means the outermost skin layers cannot process the lipids that form the water barrier. Clinically that is thick adherent scale, everted eyelids and lips, hair loss, fissuring, infection, water and heat loss, and pain.</p>
+      <p>Published cases of this disease come from small point mutations in <span class="gene">LIPN</span>. A complete deletion of both genes together has not been reported anywhere. That is why there is no research program to join &mdash; and it is also the single most valuable asset in getting one started.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="gutter"><b>02</b>Before anything</div>
+    <div class="body">
+      <h2>Three questions the existing sequencing data can already answer</h2>
+      <p>These change the entire plan. Two of them are potentially urgent findings unrelated to the skin. All three can be read off the data that has already been generated, without drawing more blood.</p>
+
+      <div class="checks">
+        <div class="check">
+          <div class="box" aria-hidden="true"></div>
+          <div>
+            <h4>Is the deletion on both copies of chromosome 10?</h4>
+            <p>This disease is recessive. The whole design assumes both copies are gone. If one intact copy remains, the deletion is not the explanation and the diagnosis is wrong.</p>
+          </div>
+        </div>
+        <div class="check">
+          <div class="box" aria-hidden="true"></div>
+          <div>
+            <h4>Does the deletion reach <span class="gene">LIPA</span>?</h4>
+            <p>Lysosomal acid lipase sits in the same cytoband. Losing it causes Wolman disease, affecting liver, spleen and adrenal glands &mdash; and it has an approved enzyme replacement therapy. If <span class="gene">LIPA</span> is involved, that is a separately treatable condition and it is urgent.</p>
+          </div>
+        </div>
+        <div class="check">
+          <div class="box" aria-hidden="true"></div>
+          <div>
+            <h4>Does the deletion reach <span class="gene">PTEN</span>?</h4>
+            <p>This tumour suppressor lies in the same band. Losing one copy causes a cancer predisposition syndrome that needs lifelong surveillance. It must be explicitly excluded.</p>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top:20px">Also record whether <span class="gene">LIPJ</span> and <span class="gene">LIPM</span> fall inside the deleted segment, and record the exact breakpoint coordinates. The breakpoints determine how much sequence any therapy has to restore.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="gutter"><b>03</b>Design logic</div>
+    <div class="body">
+      <h2>Why this defect is unusually treatable</h2>
+      <p>The shape of the problem is favourable in four specific ways:</p>
+      <ul>
+        <li>The missing proteins are <strong>small</strong>. Roughly 400 amino acids each, about 1.2 kilobases of coding sequence. Both fit inside any delivery vector with room to spare.</li>
+        <li>They are <strong>secreted enzymes</strong>. A corrected cell supplies its neighbours, so correcting every cell is not required.</li>
+        <li>The target tissue is the <strong>outside of the body</strong>. It can be dosed topically, watched directly, biopsied, and stopped. That removes most of what makes gene therapy for internal organs dangerous.</li>
+        <li>Nothing is degenerating in the nervous system. Skin renews itself continuously, so restoring the barrier should restore the tissue.</li>
+      </ul>
+      <p>The unfavourable part is equally clear: <strong>epidermis sheds.</strong> Any therapy that does not reach the basal stem cells must be reapplied forever. That single fact splits everything below into a control track that can start within months and a cure track that takes years.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="gutter"><b>04</b>Candidates</div>
+    <div class="body">
+      <h2>Five ways to attack it</h2>
+      <p>These are parallel options, not sequential steps. They are lettered, not numbered, for that reason.</p>
+
+      <div class="cands">
+
+        <article class="cand">
+          <div class="cand-head">
+            <span class="letter">A</span>
+            <h3>Bespoke topical gene therapy &mdash; an HSV-1 gel carrying both genes</h3>
+            <span class="chip chip-lead">Lead</span>
+          </div>
+          <p>There is already an approved medicine that is a replication-defective herpes simplex virus carrying a working copy of a gene, formulated as a gel and wiped onto skin weekly. It treats a blistering skin disease by delivering collagen. The same platform, with a different payload, is in trials for the most common ichthyosis subtype, where repeat topical dosing was well tolerated with no immune response and restored enzyme activity in treated skin.</p>
+          <p>That is the precedent needed here. A topical skin gene therapy delivering a missing enzyme to ichthyotic skin already has human safety data. What is missing is only the payload.</p>
+          <div class="pro-con">
+            <div class="pc up">
+              <b>Why this vector</b>
+              Capacity above 30 kilobases, so both genes fit in one construct with full regulatory elements. Non-integrating and episomal, so no insertional mutagenesis risk in a child. Topical, redosable, and stoppable.
+            </div>
+            <div class="pc down">
+              <b>The honest limit</b>
+              Transduced cells shed within weeks. This produces control, not cure: a weekly gel for life. That is exactly how the approved version is used, and for a child in this condition it would still be transformative.
+            </div>
+          </div>
+
+          <figure>
+            <div class="map-shell">
+              <svg viewBox="0 0 700 168" width="700" height="168" role="img" aria-label="Two independent expression cassettes, each with a differentiation-layer promoter, a coding sequence with its native signal peptide, and a polyadenylation site.">
+                <defs>
+                  <marker id="arw" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                    <path d="M0 0 L8 4 L0 8 z" fill="var(--accent)"/>
+                  </marker>
+                </defs>
+
+                <line x1="14" y1="62" x2="686" y2="62" stroke="var(--line)" stroke-width="2"/>
+                <line x1="14" y1="128" x2="686" y2="128" stroke="var(--line)" stroke-width="2"/>
+
+                <path d="M40 62 L40 40 L118 40" stroke="var(--accent)" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+                <text class="svg-mono" x="40" y="30" font-size="11" fill="var(--accent)">IVL / KRT1 promoter</text>
+                <rect x="136" y="46" width="238" height="32" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+                <text class="svg-mono" x="255" y="66" font-size="12.5" fill="var(--accent)" text-anchor="middle">LIPN CDS + signal peptide</text>
+                <rect x="382" y="50" width="52" height="24" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+                <text class="svg-mono" x="408" y="66" font-size="11" fill="var(--muted)" text-anchor="middle">polyA</text>
+
+                <path d="M40 128 L40 106 L118 106" stroke="var(--accent)" stroke-width="2" fill="none" marker-end="url(#arw)"/>
+                <text class="svg-mono" x="40" y="96" font-size="11" fill="var(--accent)">IVL / KRT1 promoter</text>
+                <rect x="136" y="112" width="238" height="32" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+                <text class="svg-mono" x="255" y="132" font-size="12.5" fill="var(--accent)" text-anchor="middle">LIPK CDS + signal peptide</text>
+                <rect x="382" y="116" width="52" height="24" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+                <text class="svg-mono" x="408" y="132" font-size="11" fill="var(--muted)" text-anchor="middle">polyA</text>
+
+                <line x1="460" y1="46" x2="460" y2="144" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 3"/>
+                <text class="svg-mono" x="474" y="88" font-size="11.5" fill="var(--muted)">~2.6 kb used</text>
+                <text class="svg-mono" x="474" y="106" font-size="11.5" fill="var(--muted)">&gt;30 kb available</text>
+              </svg>
+            </div>
+            <figcaption>Two independent expression units in one vector, rather than a single bicistronic construct. A self-cleaving peptide would leave a residual tag on a secreted enzyme, and with capacity this far from limiting there is no reason to accept that. Native signal peptides are kept because they are the best-validated route to correct trafficking.</figcaption>
+          </figure>
+
+          <p style="margin-top:20px"><strong>The main open decision is the promoter.</strong> Differentiation-layer promoters switch the enzymes on only in the granular layer, where both genes normally work &mdash; physiologically correct, and it avoids lipase activity in the wrong compartment. Constitutive promoters are stronger and more reliable, but a secreted lipase expressed in basal cells could degrade lipids where they are still needed. Build both and test them side by side; a second construct costs almost nothing against the price of guessing wrong.</p>
+        </article>
+
+        <article class="cand">
+          <div class="cand-head">
+            <span class="letter">B</span>
+            <h3>Lipid replacement guided by his own lipidomics</h3>
+            <span class="chip chip-now">Start now</span>
+          </div>
+          <p>This is the cheapest and fastest idea here, and it can begin immediately. Nobody has ever established what these two enzymes actually cleave. The literature says they are epidermal lipases active during terminal differentiation and stops. This patient is, unfortunately, the definitive experiment.</p>
+          <p>Take tape strips and scale from his skin &mdash; painless, no biopsy &mdash; and run comparative lipidomics against matched controls and other ichthyosis subtypes. Two signals will emerge: a lipid that <strong>accumulates</strong> because nothing cleaves it, and a downstream product that is <strong>absent</strong> because it is never made.</p>
+          <div class="pro-con">
+            <div class="pc up">
+              <b>Why it is fast</b>
+              If the missing product can be synthesised, you formulate it into an ointment and bypass the enzyme entirely. A compounded topical lipid is not a gene therapy; the regulatory burden is a fraction. Months, not years.
+            </div>
+            <div class="pc up">
+              <b>Why it comes first regardless</b>
+              This experiment defines the biomarker every other candidate is measured against. Without it you cannot tell whether a gene therapy is working except by looking at the skin.
+            </div>
+          </div>
+        </article>
+
+        <article class="cand">
+          <div class="cand-head">
+            <span class="letter">C</span>
+            <h3>Topical recombinant enzyme replacement</h3>
+            <span class="chip chip-back">Backup</span>
+          </div>
+          <p>Manufacture the two enzymes as recombinant proteins, formulate them in a penetrating vehicle, and apply them to the skin. Enzyme replacement is a mature modality, and because both proteins are naturally secreted they never need to get inside a cell.</p>
+          <div class="pro-con">
+            <div class="pc up">
+              <b>If it works</b>
+              It is the safest option in this document. No virus, no nucleic acid, and manufacturing is far simpler than a viral vector.
+            </div>
+            <div class="pc down">
+              <b>The obstacle</b>
+              The outer skin blocks molecules above roughly 500 daltons and these are 45-kilodalton proteins. Worth testing microneedle arrays, already-fissured skin, and penetration-enhancing vehicles.
+            </div>
+          </div>
+        </article>
+
+        <article class="cand">
+          <div class="cand-head">
+            <span class="letter">D</span>
+            <h3>Topical messenger RNA in lipid nanoparticles</h3>
+            <span class="chip chip-back">Revisit later</span>
+          </div>
+          <p>Deliver the instructions rather than the gene or the protein, so his own skin cells make the enzymes. Engineered vectors have produced protein throughout reconstructed epidermis after topical application, and ionizable nanoparticles have achieved sustained protein restoration in patient-derived cells.</p>
+          <p>No virus, no DNA, no integration risk, and fast manufacturing. But penetration of the outer skin layer is the acknowledged unsolved problem, transfection is patchy, and expression is transient. Watch this for two to three years rather than leading with it.</p>
+          <div class="pc down" style="margin-top:14px">
+            <b>Why gene editing is not an option here</b>
+            The newest ichthyosis work uses base editing to correct point mutations. That is unavailable in this case: you cannot edit a gene that has been deleted. Only adding a new copy works, which is why every viable candidate above delivers whole genes.
+          </div>
+        </article>
+
+        <article class="cand">
+          <div class="cand-head">
+            <span class="letter">E</span>
+            <h3>Grafts of his own gene-corrected epidermal stem cells</h3>
+            <span class="chip chip-risk">The actual cure</span>
+          </div>
+          <p>This is the only approach that produces a permanent result instead of lifelong therapy, and the precedent is real. In 2015 a boy with a severe blistering skin disease, who had lost most of his skin, received grafts of his own epidermal stem cells corrected in the laboratory and grown into sheets. Roughly eighty percent of his body surface was replaced. The corrected skin was still working years later, because the therapy reached the long-lived stem cells that regenerate the epidermis.</p>
+          <p>Applied here: biopsy healthy-looking skin, isolate the keratinocyte stem cells, correct them with an integrating vector so every daughter cell inherits the fix, expand them into sheets, and graft in stages &mdash; eyelids first to protect his corneas, then hands, then the largest painful surfaces.</p>
+          <div class="pro-con">
+            <div class="pc up">
+              <b>What it buys</b>
+              Permanence. Corrected stem cells keep producing corrected skin for life, with no weekly application.
+            </div>
+            <div class="pc down">
+              <b>What it costs</b>
+              An integrating vector carries insertional mutagenesis risk. And unlike a blistering disease, his skin is intact, so grafting means removing it first &mdash; major surgery, far harder to justify. A multi-year program at a specialist centre.
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="gutter"><b>05</b>Validation</div>
+    <div class="body">
+      <h2>Nothing goes near the patient before it works in his own cells</h2>
+      <p>These steps are genuinely sequential &mdash; each one supplies what the next needs.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">01</div>
+          <div>
+            <h4>Genetics</h4>
+            <span class="when">Weeks</span>
+            <p>Whole genome sequencing. Confirm both copies are affected, map the exact breakpoints, exclude <span class="gene">LIPA</span> and <span class="gene">PTEN</span>, record the status of the other cluster genes.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">02</div>
+          <div>
+            <h4>Lipidomics</h4>
+            <span class="when">1&ndash;3 months</span>
+            <p>Tape strips and scale against controls. Defines the biochemical deficit and the efficacy biomarker. Candidate B may fall directly out of this step.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">03</div>
+          <div>
+            <h4>A skin model built from his cells</h4>
+            <span class="when">3&ndash;6 months</span>
+            <p>One small biopsy yields keratinocytes, grown into a three-dimensional skin equivalent at an air-liquid interface. This is the workhorse of the whole program. It should reproduce his barrier defect in a dish, and every candidate is then tested against it.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">04</div>
+          <div>
+            <h4>Head-to-head screen</h4>
+            <span class="when">6&ndash;12 months</span>
+            <p>Both promoter variants of Candidate A, plus B and C, in his own skin model. Read-outs are enzyme activity, water loss through the skin, dye penetration, lipid profile restored to the step-two biomarker, and histology of the cornified layer. This is where the lead is chosen on data instead of argument.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">05</div>
+          <div>
+            <h4>Living-skin durability</h4>
+            <span class="when">12&ndash;18 months, in parallel</span>
+            <p>Graft his corrected keratinocytes onto immunodeficient mice to test durability and safety. Faster than building a double-knockout mouse, and it uses his actual cells.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">06</div>
+          <div>
+            <h4>Manufacturing and toxicology</h4>
+            <span class="when">Usually the bottleneck</span>
+            <p>Clinical-grade production, biodistribution and shedding studies. For a bespoke therapy this is normally what sets the timeline, not the science.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">07</div>
+          <div>
+            <h4>Treat, under a single-patient protocol</h4>
+            <span class="when">&mdash;</span>
+            <p>Start with one small test patch. Escalate by area only after that patch has been assessed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="gutter"><b>06</b>Regulatory</div>
+    <div class="body">
+      <h2>A therapy for one patient cannot run a randomised trial</h2>
+      <p>There are now pathways written for exactly this situation.</p>
+      <ul>
+        <li><strong>The plausible mechanism pathway.</strong> Draft guidance issued in February 2026 for personalised therapies where conventional trials are impossible. Its criteria read almost as a description of this case: an identified disease-causing abnormality, a therapy addressing the root cause, natural history data, and confirmation that the target was engaged. The most promising route.</li>
+        <li><strong>Single-patient expanded access.</strong> The traditional route. Slower, thoroughly established.</li>
+        <li><strong>European hospital exemption</strong> for advanced therapies prepared for a single patient within one member state.</li>
+        <li><strong>Orphan drug and rare paediatric disease designations</strong> are worth filing early. The comparable ichthyosis gene therapy obtained both.</li>
+      </ul>
+      <p>On the treating side, Sidra Medicine in Qatar opened a gene therapy centre for paediatric rare disease in 2025 and treats children from Iraq. Its existing programs are muscle and blood diseases rather than skin, so the realistic role is coordinating centre partnered with a skin gene therapy group.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="gutter"><b>07</b>Sponsors</div>
+    <div class="body">
+      <h2>The blocker is not the science</h2>
+      <p>Each of these groups already holds a piece of what this needs. None of them knows the case exists.</p>
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr><th>Who</th><th>What they already have</th><th>The ask</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Krystal Biotech</td>
+              <td>The approved topical skin gene therapy platform, plus an ichthyosis program using it with a different payload</td>
+              <td>Would they build a <span class="gene">LIPN</span>/<span class="gene">LIPK</span> payload on the existing vector</td>
+            </tr>
+            <tr>
+              <td>Northwestern ichthyosis program</td>
+              <td>The leading clinical ichthyosis research group, running drug repurposing trials</td>
+              <td>Take the case, build the skin model</td>
+            </tr>
+            <tr>
+              <td>FIRST (Foundation for Ichthyosis &amp; Related Skin Types)</td>
+              <td>Tele-Ichthyosis, a free remote consultation platform with world experts, plus a physician referral service</td>
+              <td>Submit the case for expert review immediately &mdash; this costs nothing and can happen this week</td>
+            </tr>
+            <tr>
+              <td>Sidra Medicine, Qatar</td>
+              <td>Gene therapy centre, regional genomics, existing Iraqi patients</td>
+              <td>Treating centre, coordination, confirmatory sequencing</td>
+            </tr>
+            <tr>
+              <td>Epidermal stem cell graft teams</td>
+              <td>The only groups that have replaced a child&rsquo;s epidermis with corrected stem cells</td>
+              <td>Feasibility opinion on Candidate E</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:22px">The leverage is the case itself. A confirmed homozygous deletion of two epidermal lipases is a first-in-world finding that answers open questions about what these enzymes do. That is a publication and a research program &mdash; which is exactly what persuades a sponsor to build a therapy with no commercial market.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="gutter"><b>08</b>Meanwhile</div>
+    <div class="body">
+      <h2>What should be happening right now</h2>
+      <p>None of the above should delay treatment that already works. Expected benefit from this alone, within months, is substantial.</p>
+      <div class="care">
+        <div class="care-item">
+          <h4>Oral acitretin</h4>
+          <p>The most effective available medicine for this type of ichthyosis. Published series in severely affected children show improvement in scale, everted eyelids and everted lips. Needs liver and lipid monitoring.</p>
+        </div>
+        <div class="care-item">
+          <h4>Ophthalmology, urgently</h4>
+          <p>The everted eyelids leave the corneas exposed. This is sight-saving and should not wait for anything else on this page.</p>
+        </div>
+        <div class="care-item">
+          <h4>Intensive barrier care</h4>
+          <p>Long baths, gentle mechanical descaling, thick emollients with urea or lactic acid, and ceramide-cholesterol preparations, which have evidence in ichthyosis.</p>
+        </div>
+        <div class="care-item">
+          <h4>Infection control and nutrition</h4>
+          <p>Damaged skin loses enormous amounts of energy, water and heat. High-calorie intake and active infection management are part of the treatment, not an afterthought.</p>
+        </div>
+        <div class="care-item">
+          <h4>Pain and sleep</h4>
+          <p>Reported to have been unable to sleep for years because contact with bedding was unbearable. Treating that is a clinical goal in its own right.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="gutter"><b>09</b>Summary</div>
+    <div class="body">
+      <h2>The five candidates, side by side</h2>
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr><th>Candidate</th><th>Mechanism</th><th>Durability</th><th>Time to patient</th><th>Risk</th><th>Verdict</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>A &middot; Topical HSV-1 gel</td>
+              <td>Delivers both genes to skin cells</td>
+              <td>Weekly, lifelong</td>
+              <td>3&ndash;5 years</td>
+              <td>Moderate</td>
+              <td class="verdict"><span class="chip chip-lead">Lead</span></td>
+            </tr>
+            <tr>
+              <td>B &middot; Lipid replacement</td>
+              <td>Supplies the missing lipid product directly</td>
+              <td>Daily, lifelong</td>
+              <td>3&ndash;12 months</td>
+              <td>Low</td>
+              <td class="verdict"><span class="chip chip-now">Start now</span></td>
+            </tr>
+            <tr>
+              <td>C &middot; Recombinant enzyme</td>
+              <td>Supplies the enzymes themselves</td>
+              <td>Frequent</td>
+              <td>2&ndash;4 years</td>
+              <td>Low</td>
+              <td class="verdict"><span class="chip chip-back">Backup</span></td>
+            </tr>
+            <tr>
+              <td>D &middot; Topical mRNA</td>
+              <td>Cells make the enzymes transiently</td>
+              <td>Frequent</td>
+              <td>3&ndash;6 years</td>
+              <td>Moderate</td>
+              <td class="verdict"><span class="chip chip-back">Revisit</span></td>
+            </tr>
+            <tr>
+              <td>E &middot; Corrected stem cell grafts</td>
+              <td>Permanently corrects skin stem cells</td>
+              <td>Permanent</td>
+              <td>5&ndash;10 years</td>
+              <td>High</td>
+              <td class="verdict"><span class="chip chip-risk">The cure</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="close">
+    <p>A cure for this deletion does not exist and cannot be conjured. But every component needed to build one already exists and is already approved in humans for a different gene: a topical skin gene therapy platform, a proven precedent for replacing a child&rsquo;s epidermis with corrected stem cells, and a regulatory pathway written for single-patient therapies.</p>
+    <p>Nobody has assembled them for these two genes because until now there was no patient. The blocker is finding an institution willing to build it &mdash; and that begins with three questions answerable from data that already exists, and one free submission to an expert review platform.</p>
+  </div>
+
+  <footer>
+    Sources: OMIM 613943 / 613924 / 613922 &middot; Israeli et al., <i>Am J Hum Genet</i> 2011 &middot; GeneReviews, autosomal recessive congenital ichthyosis &middot; Gurevich et al., <i>Nat Med</i> 2022 (topical HSV-1 skin gene therapy) &middot; KB105 phase 1/2 disclosures &middot; Hirsch et al., <i>Nature</i> 2017 (transgenic epidermal stem cell grafts) &middot; FDA draft guidance on the plausible mechanism pathway, February 2026 &middot; Sidra Medicine gene therapy centre announcements, 2025.<br><br>
+    The reported deletion is taken from a public social media post and has not been independently verified. Not medical advice.
+  </footer>
+
+</div>
+</body>
+</html>
